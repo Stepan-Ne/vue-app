@@ -1,44 +1,52 @@
 <template>
+
   <div class='app'>
-    <div>
-      <h3>Create Post</h3>
-      <form>
-        <input class="input" type="text" placeholder="title"/>
-        <input class="input" type="text" placeholder="description"/>
-        <button class="btn">Create</button>
-      </form>
-    </div>
-    <div class="post" v-for="post in posts" :key="post.id">
-      <div class="">
-        <strong>Title:</strong> {{post.title}}
-      </div>
-      <div class="">
-        <strong>Description:</strong> {{post.description}}
-      </div>
-    </div>
+    <h1>What do you think?</h1>
+    <my-btn 
+    @click="openDialog"
+    >Add Post</my-btn>
+    <my-dialog v-model="showDialog"/>
+    <!-- create is event &  createPost is listener -->
+    <post-form @create="createPost"/>
+    <post-list
+    @remove="removeItem"
+     :posts="posts"/>
+   
   </div>
 </template>
 
 <script lang='ts'>
 import { Options, Vue } from 'vue-class-component'
+import PostForm from '@/components/PostForm.vue'
+import PostList from '@/components/PostList.vue'
 
-interface PostI {
+export interface PostI {
   id: number
   title: string
-  description: string
+  body: string
 }
 @Options({
+  name: "App",
   props: {}, 
-  components: {}
+  components: {PostForm, PostList}
 })
 export default class App extends Vue {
   // @Prop() readonly msg!: string
 //  @Prop({default: 'John doe'}) readonly name: string
 posts: PostI[] = [
-  {id: 1, title: 'JS', description: 'It has proptotype-based object-orientation'},
-  {id: 1, title: 'JS', description: 'It has curly-bracket syntax'},
-
+  {id: 1, title: 'JS', body: 'It has proptotype-based object-orientation'},
+  {id: 2, title: 'JS', body: 'It has curly-bracket syntax'},
 ]
+showDialog: boolean = false
+createPost(post: PostI, str: string) {
+this.posts.push(post)
+}
+removeItem(post: PostI) {
+  this.posts  = this.posts.filter(p => p.id !== post.id)
+}
+openDialog() {
+  this.showDialog = true
+}
 }
 </script>
 
@@ -51,28 +59,6 @@ posts: PostI[] = [
 .app {
   padding: 20px;
 }
-.post {
-  border: 2px solid orange;
-  padding: 15px;
-  margin-top: 15px;
-}
-form {
-  display: flex;
-  flex-direction: column;
-}
-.input {
-  width: 100%;
-  border: 2px solid skyblue;
-  margin-top: 15px;
-  padding: 10px 15px;
-}
-.btn {
-  margin-top: 15px;
-  padding: 10px 15px;
-  background: none;
-  color: teal;
-  border: 2px solid teal;
-  /* ровняем по левому краю */
-  align-self: start;
-}
+
+
 </style>
