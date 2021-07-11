@@ -1,6 +1,6 @@
 <template>
   <div class="dialog" v-if="show" @click="hideDialog">
-    <div class="dialog_content">
+    <div @click.stop class="dialog_content">
         <slot></slot>
     </div>
   </div>
@@ -27,11 +27,13 @@ hideDialog() {
     bottom: 0;
     right: 0;
     left: 0;
-    background: rgb(0, 0, 0, .5);
+    background: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    /* flex для возможности отцентровать content */
     display: flex;
 }
 .dialog_content {
-    
+    /* centering */
     margin: auto;
     background: white;
     border-radius: 12px;
