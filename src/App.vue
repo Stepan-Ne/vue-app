@@ -2,11 +2,16 @@
 
   <div class='app'>
     <h1>What do you think?</h1>
-
-    <my-btn
-      @click="openDialog"
-      style="margin: 15px 0;"
-    >Add Post</my-btn>
+    <div class="btns_group">
+      <my-btn
+        @click="openDialog"
+        style=""
+      >Add Post</my-btn>
+      <my-select 
+      :options="options"
+      v-model="optionSelect"
+      />
+    </div>
 
     <my-dialog v-model:show="show">
       <!-- create is event &  createPost is listener -->
@@ -14,11 +19,11 @@
     </my-dialog>
 
     <post-list
-    v-if="!loading"
+      v-if="!loading"
       @remove="removeItem"
       :posts="posts"
     />
-    <h2 v-else>Loading...</h2>
+    <h5 v-else>Loading...</h5>
 
   </div>
 </template>
@@ -27,6 +32,7 @@
 import { Options, Vue } from "vue-class-component";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
+import { Watch } from 'vue-property-decorator'
 
 export interface PostI {
   id: number;
@@ -42,46 +48,42 @@ export interface PostI {
 export default class App extends Vue {
   // @Prop() readonly msg!: string
   //  @Prop({default: 'John doe'}) readonly name: string
-  posts: PostI[] | [] = []
+  posts: PostI[] | [] = [];
   url: string = `https://jsonplaceholder.typicode.com/posts?_limit=5`;
   show: boolean = false;
   errMsg: any = "";
   loading: boolean = false;
+  options: any = [
+    {title: "Название", value: "title"}, 
+    {title: "Содержание", value: "body"}
+
+  ]
+  optionSelect: string = ''
   mounted() {
-    this.fetchPosts(this.url)
+    this.fetchPosts(this.url);
   }
-  // fetchPosts<T>(url: string): Promise<T> {
-  //   this.loading = true
-  //   return fetch(url)
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       debugger
-  //       setTimeout(() => {
-  //         this.posts = res.data;
-  //       }, 2000);
-  //     })
-  //     .catch((err) => (this.errMsg = err))
-  //     .finally(() => (this.loading = false));
-  // }
+ @Watch("posts")
+ onChangePosts(newVal: any) {
+console.log(newVal)
+ }
   async fetchPosts(url: string): Promise<void> {
     try {
-          this.loading = true
-       setTimeout(async () => {
+      this.loading = true;
+      setTimeout(async () => {
         const response = await fetch(url);
         const data = await response.json();
-        this.loading = false
+        this.loading = false;
         // debugger
         this.posts = data;
       }, 1500);
     } catch (err) {
       this.errMsg = err;
-    }
-    finally {
+    } finally {
       // this.loading = false
     }
   }
   createPost(post: PostI, str: string) {
-    (this.posts as any).push(post)
+    (this.posts as any).push(post);
     this.show = false;
   }
   removeItem(post: PostI) {
@@ -101,5 +103,10 @@ export default class App extends Vue {
 }
 .app {
   padding: 20px;
+}
+.btns_group {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px;
 }
 </style>
