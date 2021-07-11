@@ -2,16 +2,23 @@
 
   <div class='app'>
     <h1>What do you think?</h1>
-    <my-btn @click="openDialog">Add Post</my-btn>
+
+    <my-btn
+      @click="openDialog"
+      style="margin: 15px 0;"
+    >Add Post</my-btn>
+
     <my-dialog v-model:show="show">
       <!-- create is event &  createPost is listener -->
       <post-form @create="createPost" />
     </my-dialog>
 
     <post-list
+    v-if="!loading"
       @remove="removeItem"
       :posts="posts"
     />
+    <h2 v-else>Loading...</h2>
 
   </div>
 </template>
@@ -23,6 +30,7 @@ import PostList from "@/components/PostList.vue";
 
 export interface PostI {
   id: number;
+  userId?: number;
   title: string;
   body: string;
 }
@@ -34,13 +42,46 @@ export interface PostI {
 export default class App extends Vue {
   // @Prop() readonly msg!: string
   //  @Prop({default: 'John doe'}) readonly name: string
-  posts: PostI[] = [
-    { id: 1, title: "JS", body: "It has proptotype-based object-orientation" },
-    { id: 2, title: "JS", body: "It has curly-bracket syntax" },
-  ];
+  posts: PostI[] | [] = []
+  url: string = `https://jsonplaceholder.typicode.com/posts?_limit=5`;
   show: boolean = false;
+  errMsg: any = "";
+  loading: boolean = false;
+  mounted() {
+    this.fetchPosts(this.url)
+  }
+  // fetchPosts<T>(url: string): Promise<T> {
+  //   this.loading = true
+  //   return fetch(url)
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       debugger
+  //       setTimeout(() => {
+  //         this.posts = res.data;
+  //       }, 2000);
+  //     })
+  //     .catch((err) => (this.errMsg = err))
+  //     .finally(() => (this.loading = false));
+  // }
+  async fetchPosts(url: string): Promise<void> {
+    try {
+          this.loading = true
+       setTimeout(async () => {
+        const response = await fetch(url);
+        const data = await response.json();
+        this.loading = false
+        // debugger
+        this.posts = data;
+      }, 1500);
+    } catch (err) {
+      this.errMsg = err;
+    }
+    finally {
+      // this.loading = false
+    }
+  }
   createPost(post: PostI, str: string) {
-    this.posts.push(post);
+    (this.posts as any).push(post)
     this.show = false;
   }
   removeItem(post: PostI) {

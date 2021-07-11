@@ -4,14 +4,14 @@
     <form @submit.prevent>
       <my-input
         class="input"
-        v-model="post.title"
+        v-model.trim="post.title"
         type="text"
         placeholder="title"
       />
 
       <my-input
         class="input"
-        v-model="post.body"
+        v-model.trim="post.body"
         type="text"
         placeholder="description"
       />
