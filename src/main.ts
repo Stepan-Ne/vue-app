@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
  import components from '@/components/UI/components';
 
- console.log(components)
+//  console.log(components)
 const app = createApp(App)
 
 components.forEach(c => {

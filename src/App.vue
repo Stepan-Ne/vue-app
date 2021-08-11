@@ -1,16 +1,9 @@
 <template>
-
-  <div class='app'>
+  <div class="app">
     <h1>What do you think?</h1>
     <div class="btns_group">
-      <my-btn
-        @click="openDialog"
-        style=""
-      >Add Post</my-btn>
-      <my-select 
-      :options="options"
-      v-model="optionSelect"
-      />
+      <my-btn @click="openDialog" style="">Add Post</my-btn>
+      <my-select :options="options" v-model="optionSelect" />
     </div>
 
     <my-dialog v-model:show="show">
@@ -18,21 +11,18 @@
       <post-form @create="createPost" />
     </my-dialog>
 
-    <post-list
-      v-if="!loading"
-      @remove="removeItem"
-      :posts="posts"
-    />
-    <h5 v-else>Loading...</h5>
-
+    <post-list v-if="!loading" @remove="removeItem" :posts="posts" />
+    <div v-else>
+      <h5>Loading...</h5>
+    </div>
   </div>
 </template>
 
-<script lang='ts'>
-import { Options, Vue } from "vue-class-component";
-import PostForm from "@/components/PostForm.vue";
-import PostList from "@/components/PostList.vue";
-import { Watch } from 'vue-property-decorator'
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import PostForm from '@/components/PostForm.vue';
+import PostList from '@/components/PostList.vue';
+import { Watch } from 'vue-property-decorator';
 
 export interface PostI {
   id: number;
@@ -41,7 +31,7 @@ export interface PostI {
   body: string;
 }
 @Options({
-  name: "App",
+  name: 'App',
   props: {},
   components: { PostForm, PostList },
 })
@@ -51,39 +41,39 @@ export default class App extends Vue {
   posts: PostI[] | [] = [];
   url: string = `https://jsonplaceholder.typicode.com/posts?_limit=5`;
   show: boolean = false;
-  errMsg: any = "";
+  errMsg: any = '';
   loading: boolean = false;
   options: any = [
-    {title: "Название", value: "title"}, 
-    {title: "Содержание", value: "body"}
-
-  ]
-  optionSelect: string = ''
-  mounted() {
-    this.fetchPosts(this.url);
+    { title: 'Название', value: 'title' },
+    { title: 'Содержание', value: 'body' },
+  ];
+  optionSelect: string = '';
+   mounted() {
+   this.fetchPosts(this.url);
   }
- @Watch("posts")
- onChangePosts(newVal: any) {
-console.log(newVal)
- }
+  @Watch('optionSelect')
+  changeoOtionSelect(newVal: any) {
+    
+    this.posts.sort((post1: any, post2: any): any => {
+      return post1[newVal]?.localeCompare(post2[newVal])
+    })
+  }
   async fetchPosts(url: string): Promise<void> {
     try {
       this.loading = true;
-      setTimeout(async () => {
-        const response = await fetch(url);
+      const response = await fetch(url);
         const data = await response.json();
         this.loading = false;
-        // debugger
         this.posts = data;
-      }, 1500);
     } catch (err) {
       this.errMsg = err;
     } finally {
-      // this.loading = false
+     this.loading = false;
     }
   }
   createPost(post: PostI, str: string) {
-    (this.posts as any).push(post);
+    // (this.posts as any).push(post);
+    this.posts = [post, ...this.posts];
     this.show = false;
   }
   removeItem(post: PostI) {

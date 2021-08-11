@@ -1,5 +1,5 @@
 <template>
-  <select v-model="modelValue" @change="changeSelect">
+  <select  @change="changeSelect">
     <option disabled value="">Select from the list</option>
     <option v-for="option in options"
     :key="option.value"
@@ -24,9 +24,10 @@ interface OptionsI {
 export default class MySelect  extends Vue {
 //   @Prop() readonly msg!: string
   @Prop() readonly options: OptionsI[] = []
-   @Prop() modelValue: string = ''
+   @Prop(String) modelValue: any;
 
   changeSelect(event: any) {
+    
       this.$emit('update:modelValue', event.target.value)
   }
 }
