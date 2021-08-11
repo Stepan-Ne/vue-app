@@ -3,6 +3,8 @@
     <h1>What do you think?</h1>
     <div class="btns_group">
       <my-btn @click="openDialog" style="">Add Post</my-btn>
+      <!-- <my-input  v-model="searchQuery"/> -->
+      <input v-model.trim="searchQuery" />
       <my-select :options="options" v-model="optionSelect" />
     </div>
 
@@ -11,7 +13,11 @@
       <post-form @create="createPost" />
     </my-dialog>
 
-    <post-list v-if="!loading" @remove="removeItem" :posts="posts" />
+    <post-list
+      v-if="!loading"
+      @remove="removeItem"
+      :posts="sortedAndSerchedPosts"
+    />
     <div v-else>
       <h5>Loading...</h5>
     </div>
@@ -48,27 +54,37 @@ export default class App extends Vue {
     { title: 'Содержание', value: 'body' },
   ];
   optionSelect: string = '';
-   mounted() {
-   this.fetchPosts(this.url);
+  searchQuery: string = '';
+  mounted() {
+    this.fetchPosts(this.url);
   }
-  @Watch('optionSelect')
-  changeoOtionSelect(newVal: any) {
-    
-    this.posts.sort((post1: any, post2: any): any => {
-      return post1[newVal]?.localeCompare(post2[newVal])
-    })
+  // @Watch('optionSelect')
+  // changeoOtionSelect(newVal: any) {
+  //   this.posts.sort((post1: any, post2: any): any => {
+  //     return post1[newVal]?.localeCompare(post2[newVal])
+  //   })
+  // }
+  get sortedPosts() {
+    return this.posts.sort((post1: any, post2: any): any => {
+      return post1[this.optionSelect]?.localeCompare(post2[this.optionSelect]);
+    });
+  }
+  get sortedAndSerchedPosts() {
+    return this.sortedPosts.filter((post) =>
+      post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
   }
   async fetchPosts(url: string): Promise<void> {
     try {
       this.loading = true;
       const response = await fetch(url);
-        const data = await response.json();
-        this.loading = false;
-        this.posts = data;
+      const data = await response.json();
+      this.loading = false;
+      this.posts = data;
     } catch (err) {
       this.errMsg = err;
     } finally {
-     this.loading = false;
+      this.loading = false;
     }
   }
   createPost(post: PostI, str: string) {

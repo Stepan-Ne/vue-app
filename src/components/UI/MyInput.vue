@@ -16,7 +16,7 @@ import { Prop } from "vue-property-decorator";
   name: "MyInput",
 })
 export default class MyInput extends Vue {
-   @Prop() readonly modelValue: string | number = '';
+   @Prop() readonly modelValue: string = '';
 
  updateInput(event: any) {
    console.log(event.target.value)
