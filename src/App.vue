@@ -1,11 +1,21 @@
 <template>
   <div class="app">
     <h1>What do you think?</h1>
+
+    <my-input
+      v-model="searchQuery"
+      placeholder="Search..."
+    />
+
     <div class="btns_group">
-      <my-btn @click="openDialog" style="">Add Post</my-btn>
-      <!-- <my-input  v-model="searchQuery"/> -->
-      <input v-model.trim="searchQuery" />
-      <my-select :options="options" v-model="optionSelect" />
+      <my-btn
+        @click="openDialog"
+        style=""
+      >Add Post</my-btn>
+      <my-select
+        :options="options"
+        v-model="optionSelect"
+      />
     </div>
 
     <my-dialog v-model:show="show">
@@ -25,10 +35,10 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import PostForm from '@/components/PostForm.vue';
-import PostList from '@/components/PostList.vue';
-import { Watch } from 'vue-property-decorator';
+import { Options, Vue } from "vue-class-component";
+import PostForm from "@/components/PostForm.vue";
+import PostList from "@/components/PostList.vue";
+import { Watch } from "vue-property-decorator";
 
 export interface PostI {
   id: number;
@@ -37,7 +47,7 @@ export interface PostI {
   body: string;
 }
 @Options({
-  name: 'App',
+  name: "App",
   props: {},
   components: { PostForm, PostList },
 })
@@ -47,14 +57,14 @@ export default class App extends Vue {
   posts: PostI[] | [] = [];
   url: string = `https://jsonplaceholder.typicode.com/posts?_limit=5`;
   show: boolean = false;
-  errMsg: any = '';
+  errMsg: any = "";
   loading: boolean = false;
   options: any = [
-    { title: 'Название', value: 'title' },
-    { title: 'Содержание', value: 'body' },
+    { title: "Название", value: "title" },
+    { title: "Содержание", value: "body" },
   ];
-  optionSelect: string = '';
-  searchQuery: string = '';
+  optionSelect: string = "";
+  searchQuery: string = "";
   mounted() {
     this.fetchPosts(this.url);
   }
@@ -70,9 +80,9 @@ export default class App extends Vue {
     });
   }
   get sortedAndSerchedPosts() {
-    return this.sortedPosts.filter((post) =>
-      post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
+    return this.sortedPosts.filter((post: any): any => {
+      return post.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+    });
   }
   async fetchPosts(url: string): Promise<void> {
     try {
