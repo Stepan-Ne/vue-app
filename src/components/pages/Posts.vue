@@ -1,7 +1,4 @@
 <template>
-  <div class="app">
-    <h1>What do you think?</h1>
-
     <my-input
       v-model="searchQuery"
       placeholder="Search..."
@@ -47,7 +44,7 @@
         @click="chanePage(page)"
       >{{page}}</div>
     </div> -->
-  </div>
+
 </template>
 
 <script lang="ts">
@@ -186,14 +183,7 @@ observer.observe(this.$refs.observer as any)
 </script>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-.app {
-  padding: 20px;
-}
+
 .btns_group {
   display: flex;
   justify-content: space-between;
