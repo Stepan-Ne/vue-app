@@ -28,8 +28,21 @@
       @remove="removeItem"
       :posts="sortedAndSerchedPosts"
     />
+
     <div v-else>
       <h5>Loading...</h5>
+    </div>
+
+    <div class="page-wrapper">
+      <div
+        v-for="page in totalPages"
+        :key="page"
+        class="page"
+        :class="{
+        'current-page': page === pageNumber
+      }"
+        @click="chanePage(page)"
+      >{{page}}</div>
     </div>
   </div>
 </template>
@@ -39,6 +52,7 @@ import { Options, Vue } from "vue-class-component";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import { Watch } from "vue-property-decorator";
+import axios from "axios";
 
 export interface PostI {
   id: number;
@@ -65,8 +79,11 @@ export default class App extends Vue {
   ];
   optionSelect: string = "";
   searchQuery: string = "";
+  pageNumber = 1;
+  totalPages = 0;
+  limit = 10;
   mounted() {
-    this.fetchPosts(this.url);
+    this.fetchPosts();
   }
   // @Watch('optionSelect')
   // changeoOtionSelect(newVal: any) {
@@ -84,18 +101,33 @@ export default class App extends Vue {
       return post.title.toLowerCase().includes(this.searchQuery.toLowerCase());
     });
   }
-  async fetchPosts(url: string): Promise<void> {
+  async fetchPosts(): Promise<void> {
     try {
       this.loading = true;
-      const response = await fetch(url);
-      const data = await response.json();
+      const response = await axios.get(
+        `https://jsonplaceholder.typicode.com/posts`,
+        {
+          params: {
+            _limit: this.limit,
+            _page: this.pageNumber,
+          },
+        }
+      );
+
       this.loading = false;
-      this.posts = data;
+      this.posts = response.data;
+      this.totalPages = Math.ceil(
+        response.headers["x-total-count"] / this.limit
+      );
     } catch (err) {
       this.errMsg = err;
     } finally {
       this.loading = false;
     }
+  }
+  chanePage(page: number) {
+    this.pageNumber = page;
+    this.fetchPosts();
   }
   createPost(post: PostI, str: string) {
     // (this.posts as any).push(post);
@@ -124,5 +156,16 @@ export default class App extends Vue {
   display: flex;
   justify-content: space-between;
   margin: 15px;
+}
+.page-wrapper {
+  display: flex;
+  margin-top: 15px;
+}
+.page {
+  border: 1px solid black;
+  padding: 15px;
+}
+.current-page {
+  border: 4px solid teal;
 }
 </style>
