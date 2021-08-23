@@ -10,6 +10,7 @@ const app = createApp(App)
 components.forEach(c => {
     app.component(c.name, c)
 })
+app.use(router);
 app.mount('#app');
 // createApp(App).use(store).use(router).mount('#app')
 app.config.performance = true;
