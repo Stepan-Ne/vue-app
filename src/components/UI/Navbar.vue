@@ -17,6 +17,7 @@ import { Options, Vue } from "vue-class-component";
 import MyBtn from "@/components/UI/MyBtn.vue";
 @Options({
   components: { MyBtn },
+  name: "Navbar",
 })
 export default class Navbar extends Vue {}
 </script>

@@ -1,39 +1,43 @@
 <template>
-    <my-input
-      v-model="searchQuery"
-      placeholder="Search..."
+  <my-input
+    v-focus
+    v-model="searchQuery"
+    placeholder="Search..."
+  />
+
+  <div class="btns_group">
+    <my-btn
+      @click="openDialog"
+      style=""
+    >Add Post</my-btn>
+    <my-select
+      :options="options"
+      v-model="optionSelect"
     />
+  </div>
 
-    <div class="btns_group">
-      <my-btn
-        @click="openDialog"
-        style=""
-      >Add Post</my-btn>
-      <my-select
-        :options="options"
-        v-model="optionSelect"
-      />
-    </div>
+  <my-dialog v-model:show="show">
+    <!-- create is event &  createPost is listener -->
+    <post-form @create="createPost" />
+  </my-dialog>
 
-    <my-dialog v-model:show="show">
-      <!-- create is event &  createPost is listener -->
-      <post-form @create="createPost" />
-    </my-dialog>
+  <post-list
+    v-if="!loading"
+    @remove="removeItem"
+    :posts="sortedAndSerchedPosts"
+  />
 
-    <post-list
-      v-if="!loading"
-      @remove="removeItem"
-      :posts="sortedAndSerchedPosts"
-    />
-
-    <div v-else>
-      <h5>Loading...</h5>
-    </div>
-    <div v-if="pending">
-      <h5>Loading...</h5>
-    </div>
-<div ref="observer" class="observer"></div>
-    <!-- <div class="page-wrapper">
+  <div v-else>
+    <h5>Loading...</h5>
+  </div>
+  <div v-if="pending">
+    <h5>Loading...</h5>
+  </div>
+  <div
+    ref="observer"
+    class="observer"
+  ></div>
+  <!-- <div class="page-wrapper">
       <div
         v-for="page in totalPages"
         :key="page"
@@ -86,18 +90,17 @@ export default class Posts extends Vue {
   mounted() {
     this.fetchPosts();
     var options = {
-    // root: document.querySelector('#scrollArea'),
-    rootMargin: '0px',
-    threshold: 1.0
-}
-const callback = (entries: any, observer: any) => {
-  if (entries[0].isIntersecting && this.pageNumber < this.totalPages) {
-    this.loadPosts()
-  }
-    
-};
-const observer = new IntersectionObserver(callback, options);
-observer.observe(this.$refs.observer as any)
+      // root: document.querySelector('#scrollArea'),
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    const callback = (entries: any, observer: any) => {
+      if (entries[0].isIntersecting && this.pageNumber < this.totalPages) {
+        this.loadPosts();
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer as any);
   }
   // @Watch('optionSelect')
   // changeoOtionSelect(newVal: any) {
@@ -183,7 +186,6 @@ observer.observe(this.$refs.observer as any)
 </script>
 
 <style>
-
 .btns_group {
   display: flex;
   justify-content: space-between;

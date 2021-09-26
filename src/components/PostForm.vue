@@ -3,6 +3,7 @@
     <h3>Create Post</h3>
     <form @submit.prevent>
       <my-input
+        v-focus
         class="input"
         v-model.trim="post.title"
         type="text"
@@ -64,5 +65,4 @@ form {
   display: flex;
   flex-direction: column;
 }
-
 </style>

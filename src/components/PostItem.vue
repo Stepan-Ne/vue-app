@@ -14,6 +14,9 @@
     <div class="post_btns">
       <my-btn @click="$emit('remove', post)">Delete</my-btn>
     </div>
+    <div class="post_btns">
+      <my-btn @click="$router.push(`/posts/${post.id}`)">Open</my-btn>
+    </div>
 
   </div>
 
