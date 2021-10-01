@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Navbar from "@/components/UI/Navbar.vue";
-
+import "@/components/UI/_globals";
 @Options({
   name: "App",
   components: { Navbar },

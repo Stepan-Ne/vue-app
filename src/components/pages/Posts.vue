@@ -10,7 +10,7 @@
       @click="openDialog"
       style=""
     >Add Post</my-btn>
-    <my-select
+    <base-my-select
       :options="options"
       v-model="optionSelect"
     />
