@@ -36,6 +36,7 @@ requiredComponents.keys().forEach((name: any) => {
 });
 app.directive(focus.name, focus);
 app.use(router);
+app.use(store);
 app.mount("#app");
 // createApp(App).use(store).use(router).mount('#app')
 app.config.performance = true;
